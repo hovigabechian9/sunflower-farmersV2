@@ -89,12 +89,12 @@ fs.createReadStream(path.resolve(__dirname, "./transactions.csv"))
             // Prevent duplicates
             return farms;
             }, {});
-            console.log({ v1Farms })
 
+            console.log('Found farms: ', Object.keys(v1Farms).length)
             const tuple = Object.keys(v1Farms).map(address => {
                 const level = v1Farms[address]
                 const token = tokens.find(token => token.HolderAddress === address)
-                console.log({ token })
+                //console.log({ token })
                 return [
                     address,
                     // Token amount
@@ -103,7 +103,8 @@ fs.createReadStream(path.resolve(__dirname, "./transactions.csv"))
                     getFruit(level),
                 ]
             })
-            console.log({ tuple })
+
+            console.log('Tuple length: ', tuple.length)
 
             fs.writeFileSync(
                 path.resolve(__dirname, "./tuple.txt"),
