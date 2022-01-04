@@ -11,6 +11,7 @@ import { SecondLand } from "./SecondBlock";
 import { ThirdBlock } from "./ThirdBlock";
 import { FourthBlock } from "./FourthBlock";
 import { FifthBlock } from "./FifthBlock";
+import { Wheat } from "./Wheat";
 import { Tiles } from "./Tiles";
 import { Trees } from "./NewTrees";
 import { Stones } from "./NewStone";
@@ -122,6 +123,8 @@ export const Land: React.FC<Props> = ({
           onHarvest={onHarvest}
           onPlant={onPlant}
         />
+
+        <Wheat inventory={inventory} />
 
         <Trees inventory={inventory} />
         <Stones inventory={inventory} />

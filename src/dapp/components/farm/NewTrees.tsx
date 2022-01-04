@@ -40,8 +40,8 @@ const TREES: React.CSSProperties[] = [
     gridRow: "3/4",
   },
   {
-    gridColumn: "2/3",
-    gridRow: "2/3",
+    gridColumn: "1/2",
+    gridRow: "3/4",
   },
   {
     gridColumn: "3/4",
@@ -92,7 +92,8 @@ export const Trees: React.FC<Props> = ({ inventory }) => {
 
   useEffect(() => {
     const load = async () => {
-      const strength = await machineState.context.blockChain.getTreeStrength();
+      const strength =
+        await machineState.context.blockChain.getTreeStrength();
       setTreeStrength(Math.floor(Number(strength)));
     };
 
@@ -137,10 +138,17 @@ export const Trees: React.FC<Props> = ({ inventory }) => {
     <>
       {TREES.map((gridPosition, index) => {
         const choppedTreeCount = 10 - treeStrength;
-        if (choppedTreeCount > index || machineState.matches("onboarding")) {
+        if (
+          choppedTreeCount > index ||
+          machineState.matches("onboarding")
+        ) {
           return (
             <div style={gridPosition}>
-              <img src={stump} className="wood-stump gather-tree" alt="tree" />
+              <img
+                src={stump}
+                className="wood-stump gather-tree"
+                alt="tree"
+              />
             </div>
           );
         }
@@ -249,7 +257,10 @@ export const Trees: React.FC<Props> = ({ inventory }) => {
                       </div>
                     </div>
 
-                    <Button onClick={chop} disabled={inventory.Axe < amount}>
+                    <Button
+                      onClick={chop}
+                      disabled={inventory.Axe < amount}
+                    >
                       <span id="craft-button-text">Chop</span>
                     </Button>
                   </div>
@@ -265,7 +276,9 @@ export const Trees: React.FC<Props> = ({ inventory }) => {
                   href="https://docs.sunflower-farmers.com/resources"
                   target="_blank"
                 >
-                  <h3 className="current-price-supply-demand">Read more</h3>
+                  <h3 className="current-price-supply-demand">
+                    Read more
+                  </h3>
                 </a>
               </div>
             </div>

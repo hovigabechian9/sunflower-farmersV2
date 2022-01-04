@@ -63,11 +63,11 @@ const ROCKS: React.CSSProperties[] = [
   },
   {
     gridColumn: "4/5",
-    gridRow: "2/3",
+    gridRow: "4/5",
   },
   {
     gridColumn: "1/2",
-    gridRow: "4/5",
+    gridRow: "6/7",
   },
   {
     gridColumn: "1/2",
@@ -94,7 +94,8 @@ export const Stones: React.FC<Props> = ({ inventory }) => {
 
   useEffect(() => {
     const load = async () => {
-      const strength = await machineState.context.blockChain.getStoneStrength();
+      const strength =
+        await machineState.context.blockChain.getStoneStrength();
       setTreeStrength(Math.floor(Number(strength)));
     };
 
@@ -139,7 +140,10 @@ export const Stones: React.FC<Props> = ({ inventory }) => {
     <>
       {ROCKS.map((gridPosition, index) => {
         const choppedTreeCount = 10 - treeStrength;
-        if (choppedTreeCount > index || machineState.matches("onboarding")) {
+        if (
+          choppedTreeCount > index ||
+          machineState.matches("onboarding")
+        ) {
           return (
             <div style={gridPosition}>
               <img
@@ -225,7 +229,8 @@ export const Stones: React.FC<Props> = ({ inventory }) => {
                 </div>
                 {inventory["Wood pickaxe"] < amount ? (
                   <Message>
-                    You need a <img src={pickaxe} className="required-tool" />
+                    You need a{" "}
+                    <img src={pickaxe} className="required-tool" />
                   </Message>
                 ) : (
                   <div className="gather-resources">
@@ -274,7 +279,9 @@ export const Stones: React.FC<Props> = ({ inventory }) => {
                   href="https://docs.sunflower-farmers.com/resources"
                   target="_blank"
                 >
-                  <h3 className="current-price-supply-demand">Read more</h3>
+                  <h3 className="current-price-supply-demand">
+                    Read more
+                  </h3>
                 </a>
               </div>
             </div>
