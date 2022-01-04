@@ -2,9 +2,11 @@
   grid-column: 2;
   grid-row: 2;
   width: 300%;
+  height: 100%;
   position: relative;
   top: 50%;
   z-index: 1;
+  cursor: pointer;
 }
 
 #wheat-fields:hover {
@@ -19,26 +21,50 @@
   position: absolute;
 }
 
-#wheat-1 {
+#wheat-plant-1 {
   width: 24%;
   z-index: 1;
   position: absolute;
   left: 7%;
-  top: 10%;
+  top: 23%;
 }
 
-#wheat-2 {
+#wheat-plant-2 {
   width: 24%;
   z-index: 1;
   position: absolute;
   left: 38%;
-  top: 10%;
+  top: 23%;
 }
 
-#wheat-3 {
+#wheat-plant-3 {
   width: 24%;
   z-index: 1;
   position: absolute;
   left: 70%;
-  top: 10%;
+  top: 23%;
+}
+
+#wheat-ready-1 {
+  width: 24%;
+  z-index: 1;
+  position: absolute;
+  left: 7%;
+  top: -5%;
+}
+
+#wheat-ready-2 {
+  width: 24%;
+  z-index: 1;
+  position: absolute;
+  left: 38%;
+  top: -5%;
+}
+
+#wheat-ready-3 {
+  width: 24%;
+  z-index: 1;
+  position: absolute;
+  left: 70%;
+  top: -5%;
 }

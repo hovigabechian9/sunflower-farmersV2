@@ -124,12 +124,11 @@ export const Land: React.FC<Props> = ({
           onPlant={onPlant}
         />
 
-        <Wheat inventory={inventory} />
-
         <Trees inventory={inventory} />
         <Stones inventory={inventory} />
         <Iron inventory={inventory} />
         <Gold inventory={inventory} />
+        <Wheat inventory={inventory} />
 
         <Chickens inventory={inventory} />
         <NFTs inventory={inventory} />
