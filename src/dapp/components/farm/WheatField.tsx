@@ -15,7 +15,6 @@ import radishSeedling from "../../images/radish/seedling.png";
 import parsnip from "../../images/parsnip/plant.png";
 import parsnipSeedling from "../../images/parsnip/seedling.png";
 import coin from "../../images/ui/icon.png";
-import cancel from "../../images/ui/cancel.png";
 
 import planted from "../../images/land/soil/planted.png";
 import terrain from "../../images/land/soil/soil.png";

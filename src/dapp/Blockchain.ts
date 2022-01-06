@@ -588,6 +588,39 @@ export class BlockChain {
     await this.loadFarm();
   }
 
+  public async harvestWheat({
+    harvestCount,
+    plantCount,
+  }: {
+    harvestCount: number;
+    plantCount: number;
+  }) {
+    const blockChain = this;
+
+    const gwei = this.web3.utils.toWei(plantCount.toString(), "ether");
+
+    await new Promise(async (resolve, reject) => {
+      this.farm.methods
+        .stake("TODO", gwei)
+        .send({ from: this.account })
+        .on("error", function (error) {
+          console.log({ error });
+          reject(error);
+        })
+        .on("transactionHash", function (transactionHash) {
+          console.log({ transactionHash });
+        })
+        .on("receipt", function (receipt) {
+          console.log({ receipt });
+          blockChain.events = [];
+          resolve(receipt);
+        });
+    });
+
+    this.inventory["Wheat Seed"] -= plantCount;
+    this.inventory["Wheat"] += harvestCount;
+  }
+
   public async getMarketConversion(): Promise<number> {
     return await this.farm.methods
       .getMarketPrice(1)

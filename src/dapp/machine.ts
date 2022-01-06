@@ -103,6 +103,12 @@ export interface MineEvent extends EventObject {
   amount: number;
 }
 
+export interface HarvestWheatEvent extends EventObject {
+  type: "HARVEST_WHEAT";
+  harvestCount: number;
+  plantCount: number;
+}
+
 export interface CollectEggs extends EventObject {
   type: "COLLECT_EGGS";
 }
@@ -128,6 +134,7 @@ export type BlockchainEvent =
   | RetryEvent
   | ChopEvent
   | MineEvent
+  | HarvestWheatEvent
   | CollectEggs
   | {
       type: "ACCOUNT_CHANGED";
@@ -162,6 +169,7 @@ export type BlockchainState = {
     | "confirming"
     | "crafting"
     | "chopping"
+    | "harvesting"
     | "collecting"
     | "mining"
     | "timerComplete"
@@ -297,6 +305,9 @@ export const blockChainMachine = createMachine<
         },
         MINE: {
           target: "mining",
+        },
+        HARVEST_WHEAT: {
+          target: "harvesting",
         },
         COLLECT_EGGS: {
           target: "collecting",
@@ -455,6 +466,23 @@ export const blockChainMachine = createMachine<
         onDone: {
           target: "farming",
           // actions - assign() data?
+        },
+        onError: {
+          target: "failure",
+          actions: assign({
+            errorCode: (context, event) => event.data.message,
+          }),
+        },
+      },
+    },
+    // Wheat
+    harvesting: {
+      invoke: {
+        id: "harvesting",
+        src: async ({ blockChain }, event) =>
+          blockChain.harvestWheat(event as HarvestWheatEvent),
+        onDone: {
+          target: "farming",
         },
         onError: {
           target: "failure",

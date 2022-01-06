@@ -91,6 +91,7 @@ export const App: React.FC = () => {
             machineState.matches("confirming") ||
             machineState.matches("upgrading") ||
             machineState.matches("rewarding") ||
+            machineState.matches("harvesting") ||
             machineState.matches("collecting")
           }
         >

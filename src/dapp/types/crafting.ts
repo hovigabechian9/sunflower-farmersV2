@@ -17,6 +17,7 @@ import PotatoStatue from "../../abis/PotatoStatue.json";
 import FarmCat from "../../abis/FarmCat.json";
 import FarmDog from "../../abis/FarmDog.json";
 import Gnome from "../../abis/Gnome.json";
+import WheatSeed from "../../abis/WheatSeed.json";
 
 import pickaxe from "../images/ui/pickaxe.png";
 import woodPickaxe from "../images/ui/wood_pickaxe.png";
@@ -473,15 +474,15 @@ export const recipes: Recipe[] = [
   },
   {
     name: "Wheat Seed",
+    abi: WheatSeed,
     description: "Used for planting wheat",
     image: wheatSeed,
     type: "ERC20",
-    address: "TODO",
-    isLocked: true,
+    address: "0xc45f08f4e82733b1f51c9db413c8ff7a8ed98683",
     ingredients: [
       {
         name: "$SFF",
-        amount: 0.1,
+        amount: 1,
         image: coin,
       },
     ],

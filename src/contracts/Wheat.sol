@@ -5,7 +5,8 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 contract Wheat is ERC20, ERC20Burnable {
-  address public minter;
+  // Farm
+  address public minter = 0x6e5Fa679211d7F6b54e14E187D34bA547c5d3fe0;
   
   struct Planted {
       uint plantedAt;
@@ -17,27 +18,11 @@ contract Wheat is ERC20, ERC20Burnable {
 
   event MinterChanged(address indexed from, address to);
 
-  constructor() payable ERC20("Sunflower Farmers Wheat", "SLW") {
-    minter = msg.sender;
-  }
-
-  function passMinterRole(address farm) public returns (bool) {
-    require(msg.sender==minter, "You are not minter");
-    minter = farm;
-
-    emit MinterChanged(msg.sender, farm);
-    return true;
-  }
-
-  // Airdrop to the designer (@Mr_Findlay) on launch
-  function airdrop(address account, uint256 amount) public {
-    require(msg.sender == minter, "You are not the minter");
-	_mint(account, amount);
-  }
+  constructor() payable ERC20("Sunflower Farmers Wheat", "SFW") {}
   
   function burn(address account, uint256 amount) public {
     require(msg.sender == minter, "You are not the minter");
-	_burn(account, amount);
+	  _burn(account, amount);
   }
   
     
@@ -48,12 +33,12 @@ contract Wheat is ERC20, ERC20Burnable {
         if (plantedAmount[account] > 0) {
             // It is actually ERC721 but same principle
             uint scarecrow = ERC20(0x143Ba32499065b5F89c518d5B75a38F3529cE324).balanceOf(account);
-            // 12 hours
-            uint timeToWait = 60 * 60 * 12;
+            // 36 hours
+            uint timeToWait = 60 * 60 * 36;
 
             if (scarecrow > 0) {
-                // 4 hours
-                timeToWait = 60 * 60 * 4;
+                // 12 hours
+                timeToWait = 60 * 60 * 12;
             }
 
             require(plantedAt[account] + timeToWait < block.timestamp, "Wheat is not ready");

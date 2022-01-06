@@ -18,8 +18,16 @@ import wheatPlant from "../../images/wheat/plant.png";
 import seedling from "../../images/wheat/seedling.png";
 import wheat from "../../images/wheat/wheat.png";
 
+import {
+  BlockchainEvent,
+  BlockchainState,
+  Context,
+  service,
+} from "../../machine";
+
 import "./Wheat.css";
 import { Inventory } from "../../types/crafting";
+import { useService } from "@xstate/react";
 
 interface Props {
   inventory: Inventory;
@@ -27,7 +35,7 @@ interface Props {
 
 export const Wheat: React.FC<Props> = ({ inventory }) => {
   const [showModal, setShowModal] = React.useState(false);
-  const [treeStrength, setTreeStrength] = React.useState(2);
+  const [harvested, setHarvested] = React.useState(false);
   const [amount, setAmount] = React.useState(0);
   const [plants, setPlants] = React.useState<{
     plantedAt: number;
@@ -37,19 +45,42 @@ export const Wheat: React.FC<Props> = ({ inventory }) => {
     plantedAt: Date.now() - 500000,
   });
 
+  const [machineState, send] = useService<
+    Context,
+    BlockchainEvent,
+    BlockchainState
+  >(service);
+
+  const seedAmount = inventory["Wheat Seed"];
   const limit = 3;
 
   const plant = () => {
     console.log("Plant!");
+    send("HARVEST_WHEAT", {
+      harvestCount: plants.amount,
+      plantCount: amount,
+    });
   };
 
   const harvest = () => {
-    console.log("Plant!");
+    send("HARVEST_WHEAT", {
+      harvestCount: plants.amount,
+      plantCount: 0,
+    });
+
+    setShowModal(false);
+  };
+
+  const harvestAndPlant = () => {
+    setHarvested(true);
+    setAmount(1);
   };
 
   const open = () => {
     setShowModal(true);
-    setAmount(1);
+
+    setHarvested(false);
+    setAmount(0);
   };
 
   const close = () => {
@@ -60,36 +91,91 @@ export const Wheat: React.FC<Props> = ({ inventory }) => {
   // TODO scarecrow time
   const isReady = plants.plantedAt > Date.now() / 1000 - 60 * 60 * 12;
 
+  const Actions = () => {
+    if (isReady && !harvested) {
+      return (
+        <>
+          <Button onClick={harvest}>
+            <span id="craft-button-text">Harvest</span>
+          </Button>
+          <Button onClick={harvestAndPlant}>
+            <span id="craft-button-text">Harvest & Plant</span>
+          </Button>
+        </>
+      );
+    }
+
+    if (seedAmount < amount) {
+      return (
+        <Message>
+          You need <img src={seed} className="required-tool" />
+        </Message>
+      );
+    }
+
+    return (
+      <div className="gather-resources">
+        <div id="craft-count">
+          <img className="gather-axe" src={seed} />
+          <Message>{amount}</Message>
+          <div id="arrow-container">
+            {amount < limit ? (
+              <img
+                className="craft-arrow"
+                alt="Step up donation value"
+                src={arrowUp}
+                onClick={() => setAmount((r) => r + 1)}
+              />
+            ) : (
+              <div />
+            )}
+
+            {amount > 1 && (
+              <img
+                className="craft-arrow"
+                alt="Step down donation value"
+                src={arrowDown}
+                onClick={() => setAmount((r) => r - 1)}
+              />
+            )}
+          </div>
+        </div>
+
+        <Button onClick={plant} disabled={seedAmount < amount}>
+          <span id="craft-button-text">Plant</span>
+        </Button>
+      </div>
+    );
+  };
+
+  const Crops = () => {
+    if (amount > 0) {
+      return Array(amount)
+        .fill(null)
+        .map((_, i) => <img src={seedling} id={`wheat-plant-${i + 1}`} />);
+    }
+
+    if (!isReady) {
+      return Array(plants.amount)
+        .fill(null)
+        .map((_, i) => <img src={seedling} id={`wheat-plant-${i + 1}`} />);
+    }
+
+    if (plants.amount > 0) {
+      return Array(plants.amount)
+        .fill(null)
+        .map((_, i) => (
+          <img src={wheatPlant} id={`wheat-ready-${i + 1}`} />
+        ));
+    }
+  };
+
   return (
     <>
       <div id="wheat-fields" onClick={open}>
         <img src={wheatFields} id="wheat-field-image" />
 
-        {amount > 0 && <img src={seedling} id="wheat-plant-1" />}
-
-        {amount > 1 && <img src={seedling} id="wheat-plant-2" />}
-
-        {amount > 2 && <img src={seedling} id="wheat-plant-3" />}
-
-        {plants.amount > 0 && !isReady && (
-          <img src={seedling} id="wheat-plant-1" />
-        )}
-        {plants.amount >= 1 && !isReady && (
-          <img src={seedling} id="wheat-plant-2" />
-        )}
-        {plants.amount >= 2 && !isReady && (
-          <img src={seedling} id="wheat-plant-3" />
-        )}
-
-        {amount == 0 && plants.amount > 0 && isReady && (
-          <img src={wheatPlant} id="wheat-ready-1" />
-        )}
-        {amount <= 1 && plants.amount >= 1 && isReady && (
-          <img src={wheatPlant} id="wheat-ready-2" />
-        )}
-        {amount <= 2 && plants.amount >= 2 && isReady && (
-          <img src={wheatPlant} id="wheat-ready-3" />
-        )}
+        {Crops()}
       </div>
       {showModal && (
         <Modal
@@ -127,53 +213,7 @@ export const Wheat: React.FC<Props> = ({ inventory }) => {
                     </div>
                   </div>
                 </div>
-                {inventory["Iron Pickaxe"] < amount ? (
-                  <Message>
-                    You need <img src={seed} className="required-tool" />
-                  </Message>
-                ) : (
-                  <>
-                    {isReady && (
-                      <Button onClick={plant}>
-                        <span id="craft-button-text">Harvest</span>
-                      </Button>
-                    )}
-                    <div className="gather-resources">
-                      <div id="craft-count">
-                        <img className="gather-axe" src={seed} />
-                        <Message>{amount}</Message>
-                        <div id="arrow-container">
-                          {amount < limit ? (
-                            <img
-                              className="craft-arrow"
-                              alt="Step up donation value"
-                              src={arrowUp}
-                              onClick={() => setAmount((r) => r + 1)}
-                            />
-                          ) : (
-                            <div />
-                          )}
-
-                          {amount > 1 && (
-                            <img
-                              className="craft-arrow"
-                              alt="Step down donation value"
-                              src={arrowDown}
-                              onClick={() => setAmount((r) => r - 1)}
-                            />
-                          )}
-                        </div>
-                      </div>
-
-                      <Button
-                        onClick={plant}
-                        disabled={inventory["Iron Pickaxe"] < amount}
-                      >
-                        <span id="craft-button-text">Plant</span>
-                      </Button>
-                    </div>
-                  </>
-                )}
+                {Actions()}
               </div>
               <div className="resource-details">
                 <span className="resource-title">Wheat Field</span>
